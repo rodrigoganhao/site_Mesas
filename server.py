@@ -14,14 +14,13 @@ class ReservationHandler(SimpleHTTPRequestHandler):
         self.send_response(status)
         self.send_header('Content-Type', 'application/json; charset=utf-8')
         self.send_header('Content-Length', str(len(payload)))
-        self.send_header('Access-Control-Allow-Origin', '*')  # Permite chamadas do seu site
+        self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
         self.end_headers()
         self.wfile.write(payload)
 
     def do_OPTIONS(self):
-        # Necessário para CORS (chamadas do browser)
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
@@ -72,6 +71,11 @@ class ReservationHandler(SimpleHTTPRequestHandler):
         })
 
     def do_GET(self):
+        # Redirecionar root para index.html
+        if self.path == '/':
+            self.path = '/index.html'
+        
+        # API de reservas
         if self.path == '/api/reservas':
             try:
                 reservas = json.loads(DATA_FILE.read_text(encoding='utf-8'))
@@ -79,6 +83,12 @@ class ReservationHandler(SimpleHTTPRequestHandler):
                 reservas = []
             self._send_json(200, {'success': True, 'reservas': reservas})
             return
+        
+        # Evitar listagem de diretórios
+        if self.path.endswith('/'):
+            self.path = self.path + 'index.html'
+        
+        # Servir ficheiros estáticos normalmente
         super().do_GET()
 
 if __name__ == '__main__':
