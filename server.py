@@ -2,6 +2,7 @@ import json
 import os
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from pathlib import Path
+from urllib.parse import urlsplit, urlunsplit
 
 DATA_FILE = Path('reservas.json')
 
@@ -78,6 +79,20 @@ class ReservationHandler(SimpleHTTPRequestHandler):
             except Exception:
                 reservas = []
             self._send_json(200, {'success': True, 'reservas': reservas})
+            return
+
+        # Redirecionar URLs com .html para a versão limpa
+        parsed = urlsplit(self.path)
+        if parsed.path.endswith('.html'):
+            clean_path = parsed.path[:-5]
+            if clean_path == '/index':
+                clean_path = '/'
+            if not clean_path.startswith('/'):
+                clean_path = '/' + clean_path.lstrip('/')
+            location = urlunsplit((parsed.scheme, parsed.netloc, clean_path, parsed.query, parsed.fragment))
+            self.send_response(301)
+            self.send_header('Location', location)
+            self.end_headers()
             return
         
         # Redirecionar root para index.html
