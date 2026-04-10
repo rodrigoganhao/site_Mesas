@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Equipa — Mesas Lisboa</title>
+  <style>
+    :root {
+      --terra: #B5451B; --terra-dark: #8A3212; --amber: #C8892A; --amber-pale: #F0D9B0;
+      --warm-dark: #1E1510; --warm-mid: #4A3728; --warm-tan: #8C7355;
+      --sand: #E8DCC8; --sand-light: #F4EDE0; --parchment: #FAF6EE;
+      --sys: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sys); background: var(--parchment); color: var(--warm-dark); }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: var(--terra); display: flex; justify-content: space-between; align-items: center; padding: 0 3.5rem; height: 64px; box-shadow: 0 2px 20px rgba(30,21,16,0.3); }
+    .nav-logo { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: #fff; text-decoration: none; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-size: 0.8rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.75); text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: #fff; }
+    .nav-cta { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--terra); background: #fff; padding: 0.55rem 1.4rem; text-decoration: none; }
+    .nav-cta:hover { background: var(--amber-pale); }
+    .nav-block { position: relative; display: flex; align-items: center; }
+    .nav-cursor { position: absolute; top: 50%; left: 0; height: 40px; width: 0; border-radius: 9999px; background: rgba(255,255,255,0.18); transition: transform 0.25s ease, width 0.25s ease, opacity 0.25s ease; pointer-events: none; opacity: 0; transform: translateY(-50%); }
+
+    .page-hero { padding: 120px 3.5rem 5rem; background: var(--warm-dark); position: relative; overflow: hidden; }
+    .page-hero::before { content: ''; position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1400&q=60'); background-size: cover; opacity: 0.1; }
+    .page-hero-inner { position: relative; z-index: 2; max-width: 700px; }
+    .breadcrumb { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 1rem; }
+    .breadcrumb a { color: var(--amber); text-decoration: none; }
+    .page-title { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700; color: #fff; line-height: 1.08; margin-bottom: 0.8rem; }
+    .page-title em { font-style: italic; color: var(--amber-pale); font-weight: 300; }
+    .page-subtitle { font-size: 1rem; font-weight: 300; color: rgba(255,255,255,0.45); max-width: 50ch; line-height: 1.8; }
+
+    .sec-sep { height: 4px; background: linear-gradient(to right, var(--terra), var(--amber), var(--terra)); opacity: 0.3; }
+
+    /* Chef destaque */
+    .chef-destaque { max-width: 1160px; margin: 0 auto; padding: 6rem 3.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+    .chef-img { position: relative; }
+    .chef-img img { width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block; }
+    .chef-img-label { position: absolute; bottom: 1.5rem; left: 1.5rem; background: var(--terra); color: #fff; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.4rem 1rem; }
+    .chef-tag { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase; color: var(--terra); margin-bottom: 0.6rem; display: block; }
+    .chef-name { font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; margin-bottom: 0.3rem; line-height: 1.1; }
+    .chef-role { font-size: 1rem; font-weight: 400; color: var(--warm-tan); margin-bottom: 2rem; }
+    .chef-bio { font-size: 1rem; font-weight: 300; color: var(--warm-mid); line-height: 1.9; margin-bottom: 1rem; }
+    .chef-quote { font-size: 1.15rem; font-style: italic; font-weight: 400; color: var(--terra-dark); border-left: 3px solid var(--terra); padding-left: 1.2rem; margin-top: 1.5rem; line-height: 1.6; }
+
+    /* Resto da equipa */
+    .team-section { background: var(--sand-light); padding: 5rem 3.5rem; }
+    .team-header { max-width: 1160px; margin: 0 auto 3rem; }
+    .sec-tag { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase; color: var(--terra); margin-bottom: 0.6rem; display: block; }
+    .sec-title { font-size: clamp(1.9rem, 3.5vw, 2.8rem); font-weight: 700; line-height: 1.1; }
+    .sec-title em { font-style: italic; color: var(--terra); font-weight: 400; }
+    .team-grid { max-width: 1160px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+    .team-card { background: var(--parchment); overflow: hidden; transition: transform 0.3s, box-shadow 0.3s; }
+    .team-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(30,21,16,0.12); }
+    .team-card img { width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block; filter: saturate(0.85); transition: filter 0.4s; }
+    .team-card:hover img { filter: saturate(1); }
+    .team-card-info { padding: 1.2rem 1.4rem 1.4rem; }
+    .team-card-name { font-size: 1rem; font-weight: 700; margin-bottom: 0.2rem; }
+    .team-card-role { font-size: 0.78rem; font-weight: 500; color: var(--terra); letter-spacing: 0.06em; margin-bottom: 0.6rem; }
+    .team-card-desc { font-size: 0.85rem; font-weight: 300; color: var(--warm-tan); line-height: 1.65; }
+
+    /* Valores */
+    .valores-section { max-width: 1160px; margin: 0 auto; padding: 6rem 3.5rem; }
+    .valores-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; margin-top: 3rem; }
+    .valor { padding: 2rem; border-top: 3px solid var(--terra); }
+    .valor-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.6rem; }
+    .valor-desc { font-size: 0.9rem; font-weight: 300; color: var(--warm-tan); line-height: 1.8; }
+
+    /* CTA */
+    .team-cta { background: var(--warm-dark); padding: 4rem 3.5rem; text-align: center; }
+    .team-cta p { font-size: 1.1rem; font-weight: 300; color: rgba(255,255,255,0.55); margin-bottom: 1.5rem; }
+    .btn-terra { font-size: 0.85rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; background: var(--terra); color: #fff; padding: 1rem 2.2rem; text-decoration: none; display: inline-block; transition: background 0.25s; }
+    .btn-terra:hover { background: var(--terra-dark); }
+
+    footer { background: var(--warm-dark); padding: 3rem 3.5rem 2rem; border-top: 1px solid rgba(255,255,255,0.06); }
+    .footer-simple { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .footer-logo { font-size: 1.2rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #fff; text-decoration: none; }
+    .footer-links { display: flex; gap: 2rem; }
+    .footer-links a { font-size: 0.82rem; font-weight: 300; color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--amber-pale); }
+
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.85s ease, transform 0.85s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    .rd1{transition-delay:0.08s} .rd2{transition-delay:0.16s} .rd3{transition-delay:0.24s} .rd4{transition-delay:0.32s}
+
+    @media (max-width: 900px) {
+      nav { padding: 0 1.5rem; } .nav-links { display: none; }
+      .page-hero { padding: 100px 1.5rem 3rem; }
+      .chef-destaque { grid-template-columns: 1fr; gap: 2.5rem; padding: 4rem 1.5rem; }
+      .team-section { padding: 4rem 1.5rem; }
+      .team-grid { grid-template-columns: 1fr 1fr; }
+      .valores-section { padding: 4rem 1.5rem; }
+      .valores-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Mesas</a>
+  <div class="nav-block">
+    <ul class="nav-links" id="navTabs">
+      <li><a href="index.html#menu">Menu</a></li>
+      <li><a href="ementa.html">Ementa</a></li>
+      <li><a href="index.html#sobre">Sobre</a></li>
+      <li><a href="galeria.html">Galeria</a></li>
+      <li class="active"><a href="equipa.html">Equipa</a></li>
+      <li><a href="index.html#localizacao">Localização</a></li>
+      <li><a href="index.html#reserva">Reservas</a></li>
+    </ul>
+    <span class="nav-cursor" id="navCursor"></span>
+  </div>
+  <a href="index.html#reserva" class="nav-cta">Reservar</a>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <p class="breadcrumb"><a href="index.html">Início</a> → Equipa</p>
+    <h1 class="page-title">As pessoas<br>por trás da <em>magia</em></h1>
+    <p class="page-subtitle">Um restaurante é feito de pessoas. Conheça quem cozinha, serve e faz de cada visita uma memória que fica.</p>
+  </div>
+</div>
+
+<!-- CHEF DESTAQUE -->
+<div class="chef-destaque reveal">
+  <div class="chef-img">
+    <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=800&q=85" alt="Chef Paulo Ferreira">
+    <div class="chef-img-label">Chef Executivo</div>
+  </div>
+  <div>
+    <span class="chef-tag">O nosso chef</span>
+    <h2 class="chef-name">Paulo Ferreira</h2>
+    <p class="chef-role">Chef Executivo & Co-Fundador</p>
+    <p class="chef-bio">Paulo cresceu entre as cozinhas da avó em Trás-os-Montes e os mercados de Lisboa. Formado no Institut Paul Bocuse, em Lyon, trouxe consigo a técnica francesa e o amor incondicional pela cozinha portuguesa.</p>
+    <p class="chef-bio">Aos 28 anos, fundou o Mesas com a visão de criar um espaço onde a memória e a modernidade se sentam à mesma mesa. Hoje, com mais de 12 anos de casa, continua a ser ele quem primeiro chega e quem mais tarde sai.</p>
+    <blockquote class="chef-quote">"Cozinhar é o acto mais generoso que conheço. Dás tudo o que tens, e o que fica é o sorriso de quem come."</blockquote>
+  </div>
+</div>
+
+<div class="sec-sep"></div>
+
+<!-- EQUIPA -->
+<div class="team-section">
+  <div class="team-header">
+    <span class="sec-tag">A equipa</span>
+    <h2 class="sec-title">Quem faz acontecer <em>todos os dias</em></h2>
+  </div>
+  <div class="team-grid">
+    <div class="team-card reveal rd1">
+      <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=600&q=85" alt="Ana Rodrigues">
+      <div class="team-card-info">
+        <div class="team-card-name">Ana Rodrigues</div>
+        <div class="team-card-role">Sous Chef</div>
+        <div class="team-card-desc">Especialista em pastelaria e sobremesas. Responsável pelos segredos doces do Mesas.</div>
+      </div>
+    </div>
+    <div class="team-card reveal rd2">
+      <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&q=85" alt="João Santos">
+      <div class="team-card-info">
+        <div class="team-card-name">João Santos</div>
+        <div class="team-card-role">Sommelier</div>
+        <div class="team-card-desc">Curador da nossa carta de vinhos com mais de 80 referências nacionais.</div>
+      </div>
+    </div>
+    <div class="team-card reveal rd3">
+      <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=600&q=85" alt="Marta Costa">
+      <div class="team-card-info">
+        <div class="team-card-name">Marta Costa</div>
+        <div class="team-card-role">Directora de Sala</div>
+        <div class="team-card-desc">Garante que cada cliente se sinta em casa desde o momento em que entra.</div>
+      </div>
+    </div>
+    <div class="team-card reveal rd4">
+      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=85" alt="Carlos Lima">
+      <div class="team-card-info">
+        <div class="team-card-name">Carlos Lima</div>
+        <div class="team-card-role">Chef de Partie — Grelhados</div>
+        <div class="team-card-desc">Mestre da brasa. Transforma cada corte numa obra de arte fumada.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sec-sep"></div>
+
+<!-- VALORES -->
+<div class="valores-section reveal">
+  <span class="sec-tag">O que nos une</span>
+  <h2 class="sec-title">Os nossos <em>valores</em></h2>
+  <div class="valores-grid">
+    <div class="valor">
+      <div class="valor-title">Respeito pelo produto</div>
+      <p class="valor-desc">Trabalhamos com o que a terra e o mar nos dão, na estação certa, da forma mais honesta possível.</p>
+    </div>
+    <div class="valor">
+      <div class="valor-title">Generosidade à mesa</div>
+      <p class="valor-desc">Cada prato é uma oferta. Não conta apenas o sabor — conta a intenção de quem o prepara.</p>
+    </div>
+    <div class="valor">
+      <div class="valor-title">Aprendizagem contínua</div>
+      <p class="valor-desc">A cozinha não pára. A nossa equipa viaja, aprende e traz sempre algo novo para a mesa.</p>
+    </div>
+  </div>
+</div>
+
+<div class="team-cta">
+  <p>Queres conhecer-nos pessoalmente?</p>
+  <a href="index.html#reserva" class="btn-terra">Reservar uma mesa →</a>
+</div>
+
+<footer>
+  <div class="footer-simple">
+    <a href="index.html" class="footer-logo">Mesas</a>
+    <div class="footer-links">
+      <a href="index.html">Início</a>
+      <a href="ementa.html">Ementa</a>
+      <a href="galeria.html">Galeria</a>
+      <a href="index.html#reserva">Reservar</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.07 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  const navTabs = Array.from(document.querySelectorAll('#navTabs li'));
+  const navCursor = document.getElementById('navCursor');
+  function updateNavCursor(tab) {
+    const rect = tab.getBoundingClientRect();
+    const parentRect = tab.parentElement.getBoundingClientRect();
+    navCursor.style.width = `${rect.width}px`;
+    navCursor.style.transform = `translateX(${rect.left - parentRect.left}px) translateY(-50%)`;
+    navCursor.style.opacity = '1';
+  }
+  if (navTabs.length && navCursor) {
+    navTabs.forEach(tab => {
+      tab.addEventListener('mouseenter', () => updateNavCursor(tab));
+      tab.addEventListener('click', () => {
+        navTabs.forEach(item => item.classList.remove('active'));
+        tab.classList.add('active');
+        updateNavCursor(tab);
+      });
+    });
+    document.querySelector('nav').addEventListener('mouseleave', () => {
+      const activeTab = document.querySelector('#navTabs li.active');
+      if (activeTab) updateNavCursor(activeTab);
+    });
+    window.addEventListener('load', () => {
+      const activeTab = document.querySelector('#navTabs li.active');
+      if (activeTab) updateNavCursor(activeTab);
+    });
+  }
+</script>
+</body>
+</html>
