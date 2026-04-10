@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+
+<html lang="pt">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Mesas — Restaurante Lisboa</title>
+
+  <style>
+
+    :root {
+
+      --terra: #B5451B;
+
+      --terra-dark: #8A3212;
+
+      --amber: #C8892A;
+
+      --amber-pale: #F0D9B0;
+
+      --warm-dark: #1E1510;
+
+      --warm-mid: #4A3728;
+
+      --warm-tan: #8C7355;
+
+      --sand: #E8DCC8;
+
+      --sand-light: #F4EDE0;
+
+      --parchment: #FAF6EE;
+
+      --sys: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body { font-family: var(--sys); background: var(--parchment); color: var(--warm-dark); overflow-x: hidden; }
+
+
+
+    /* NAV */
+
+    nav {
+
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+
+      background: var(--terra);
+
+      display: flex; justify-content: space-between; align-items: center;
+
+      padding: 0 3.5rem; height: 64px;
+
+      box-shadow: 0 2px 20px rgba(30,21,16,0.3);
+
+    }
+
+    .nav-logo { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: #fff; text-decoration: none; }
+
+    .nav-block { position: relative; display: flex; align-items: center; }
+
+    .nav-links { display: flex; gap: 2rem; list-style: none; position: relative; }
+
+    .nav-links li { position: relative; }
+
+    .nav-links a { font-size: 0.8rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.75); text-decoration: none; transition: color 0.2s; padding: 0.6rem 0; display: inline-block; }
+
+    .nav-links a:hover, .nav-links li.active a { color: #fff; }
+
+    .nav-cursor { position: absolute; top: 50%; left: 0; height: 40px; width: 0; border-radius: 9999px; background: rgba(255,255,255,0.18); transition: transform 0.25s ease, width 0.25s ease, opacity 0.25s ease; pointer-events: none; opacity: 0; transform: translateY(-50%); }
+
+    .nav-cta { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--terra); background: #fff; padding: 0.55rem 1.4rem; text-decoration: none; transition: background 0.2s; }
+
+    .nav-cta:hover { background: var(--amber-pale); }
+
+
+
+    /* HERO */
+
+    .hero { position: relative; height: 100vh; min-height: 600px; display: flex; align-items: center; padding: 64px 3.5rem 0; overflow: hidden; }
+
+    .hero-bg { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&q=85'); background-size: cover; background-position: center; }
+
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to right, rgba(30,21,16,0.82) 40%, rgba(30,21,16,0.3)); }
+
+    .hero-content { position: relative; z-index: 2; max-width: 620px; }
+
+    .hero-eyebrow { display: inline-block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase; color: var(--amber); margin-bottom: 1.2rem; }
+
+    .hero-title { font-size: clamp(2.8rem, 5.5vw, 5rem); font-weight: 700; line-height: 1.08; color: #fff; margin-bottom: 1.2rem; }
+
+    .hero-title em { font-style: italic; color: var(--amber-pale); font-weight: 300; }
+
+    .hero-desc { font-size: 1.05rem; font-weight: 300; color: rgba(255,255,255,0.72); line-height: 1.85; max-width: 44ch; margin-bottom: 2.5rem; }
+
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    .btn-terra { font-size: 0.85rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; background: var(--terra); color: #fff; padding: 1rem 2.2rem; text-decoration: none; transition: background 0.25s, transform 0.2s; display: inline-block; }
+
+    .btn-terra:hover { background: var(--terra-dark); transform: translateY(-2px); }
+
+    .btn-ghost { font-size: 0.85rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.8); border: 1.5px solid rgba(255,255,255,0.4); padding: 1rem 2.2rem; text-decoration: none; transition: border-color 0.25s, color 0.25s; display: inline-block; }
+
+    .btn-ghost:hover { border-color: #fff; color: #fff; }
+
+    .hero-stats { position: absolute; bottom: 0; left: 0; right: 0; display: grid; grid-template-columns: repeat(4,1fr); z-index: 2; }
+
+    .hero-stat { padding: 1.4rem 2rem; border-right: 1px solid rgba(255,255,255,0.1); background: rgba(20,14,8,0.6); backdrop-filter: blur(8px); }
+
+    .hero-stat:last-child { border-right: none; }
+
+    .stat-n { font-size: 1.6rem; font-weight: 700; color: var(--amber); line-height: 1; margin-bottom: 0.2rem; }
+
+    .stat-l { font-size: 0.68rem; font-weight: 400; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4); }
+
+
+
+    /* MARQUEE */
+
+    .marquee-wrap { background: var(--warm-dark); border-top: 3px solid var(--terra); overflow: hidden; padding: 0.9rem 0; white-space: nowrap; }
+
+    .marquee-inner { display: inline-block; animation: marquee 26s linear infinite; }
+
+    .marquee-item { display: inline-block; font-size: 0.88rem; font-weight: 400; letter-spacing: 0.05em; color: rgba(255,255,255,0.45); padding: 0 1.8rem; }
+
+    .marquee-item strong { color: var(--amber); font-weight: 600; }
+
+    .marquee-sep { color: var(--terra); }
+
+    @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+
+
+    /* UTILITÁRIOS */
+
+    .s-light { background: var(--parchment); }
+
+    .s-sand { background: var(--sand-light); }
+
+    .s-dark { background: var(--warm-dark); }
+
+    .s-terra { background: var(--terra); }
+
+    .section { padding: 6rem 3.5rem; }
+
+    .sec-sep { height: 4px; background: linear-gradient(to right, var(--terra), var(--amber), var(--terra)); opacity: 0.3; }
+
+    .sec-tag { display: inline-block; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase; color: var(--terra); margin-bottom: 0.6rem; }
+
+    .sec-title { font-size: clamp(1.9rem, 3.5vw, 2.8rem); font-weight: 700; line-height: 1.1; }
+
+    .sec-title em { font-style: italic; color: var(--terra); font-weight: 400; }
+
+    .s-dark .sec-title { color: #fff; }
+
+    .s-dark .sec-title em { color: var(--amber-pale); }
+
+
+
+    /* MENU HIGHLIGHTS */
+
+    .menu-wrap { max-width: 1160px; margin: 0 auto; }
+
+    .menu-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; }
+
+    .ver-tudo { font-size: 0.82rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--terra); text-decoration: none; border-bottom: 2px solid var(--terra); padding-bottom: 2px; transition: color 0.2s; }
+
+    .ver-tudo:hover { color: var(--terra-dark); }
+
+    .menu-mosaic { display: grid; grid-template-columns: 5fr 3fr 3fr; grid-template-rows: 290px 290px; gap: 5px; }
+
+    .mi { position: relative; overflow: hidden; background: var(--warm-dark); cursor: pointer; }
+
+    .mi.feat { grid-row: span 2; }
+
+    .mi img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.7s ease, filter 0.4s; filter: brightness(0.82); }
+
+    .mi:hover img { transform: scale(1.05); filter: brightness(0.65); }
+
+    .mi-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 2.5rem 1.8rem 1.8rem; background: linear-gradient(transparent, rgba(18,12,6,0.92)); }
+
+    .mi-name { font-size: 1.2rem; font-weight: 700; color: #fff; margin-bottom: 0.25rem; }
+
+    .mi.feat .mi-name { font-size: 1.8rem; margin-bottom: 0.5rem; }
+
+    .mi-desc { font-size: 0.85rem; font-weight: 300; color: rgba(255,255,255,0.6); line-height: 1.5; margin-bottom: 0.5rem; }
+
+    .mi-price { font-size: 1rem; font-weight: 700; color: var(--amber); }
+
+
+
+    /* SOBRE */
+
+    .sobre-wrap { max-width: 1160px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+
+    .sobre-imgs { position: relative; height: 500px; }
+
+    .img-main { position: absolute; top: 0; left: 0; right: 2.5rem; bottom: 2.5rem; overflow: hidden; }
+
+    .img-main img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .img-accent { position: absolute; bottom: 0; right: 0; width: 52%; height: 44%; overflow: hidden; border: 5px solid var(--sand-light); }
+
+    .img-accent img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .sobre-body { font-size: 1rem; font-weight: 300; color: var(--warm-mid); line-height: 1.9; margin-bottom: 1rem; }
+
+    .sobre-text .sec-title { margin-bottom: 1.5rem; }
+
+
+
+    /* PILARES (compactos) */
+
+    .pilares-grid { max-width: 1160px; margin: 0 auto; display: grid; grid-template-columns: repeat(3,1fr); gap: 0; }
+
+    .pilar { padding: 2rem 2.2rem; border-left: 3px solid transparent; transition: border-color 0.25s, background 0.25s; display: flex; gap: 1.2rem; align-items: flex-start; }
+
+    .pilar:hover { border-left-color: var(--terra); background: #fff; }
+
+    .pilar-n { font-size: 1.4rem; font-weight: 700; color: var(--terra); opacity: 0.3; flex-shrink: 0; line-height: 1.2; }
+
+    .pilar-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; }
+
+    .pilar-desc { font-size: 0.85rem; font-weight: 300; color: var(--warm-tan); line-height: 1.75; }
+
+
+
+    /* GALERIA (preview) */
+
+    .galeria-grid { max-width: 1160px; margin: 2.5rem auto 0; display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; }
+
+    .gal { overflow: hidden; cursor: pointer; position: relative; height: 240px; }
+
+    .gal.wide { grid-column: span 2; }
+
+    .gal img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease, filter 0.3s; filter: saturate(0.88); }
+
+    .gal:hover img { transform: scale(1.07); filter: saturate(1.05); }
+
+    .gal-overlay { position: absolute; inset: 0; background: rgba(30,21,16,0); display: flex; align-items: center; justify-content: center; transition: background 0.3s; }
+
+    .gal-overlay span { color: #fff; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0; transition: opacity 0.3s; }
+
+    .gal:hover .gal-overlay { background: rgba(30,21,16,0.35); }
+
+    .gal:hover .gal-overlay span { opacity: 1; }
+
+
+
+    /* LIGHTBOX */
+
+    .lightbox { display: none; position: fixed; inset: 0; background: rgba(10,7,4,0.95); z-index: 1000; align-items: center; justify-content: center; }
+
+    .lightbox.open { display: flex; }
+
+    .lightbox img { max-width: 90vw; max-height: 88vh; object-fit: contain; display: block; }
+
+    .lb-close { position: absolute; top: 1.5rem; right: 2rem; color: #fff; font-size: 2rem; cursor: pointer; opacity: 0.7; transition: opacity 0.2s; line-height: 1; background: none; border: none; }
+
+    .lb-close:hover { opacity: 1; }
+
+    .lb-prev, .lb-next { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.1); border: none; color: #fff; font-size: 1.5rem; padding: 1rem 1.4rem; cursor: pointer; transition: background 0.2s; }
+
+    .lb-prev:hover, .lb-next:hover { background: rgba(255,255,255,0.22); }
+
+    .lb-prev { left: 1.5rem; }
+
+    .lb-next { right: 1.5rem; }
+
+    .lb-counter { position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.5); font-size: 0.8rem; letter-spacing: 0.1em; }
+
+
+
+    /* FITA */
+
+    .fita-inner { max-width: 800px; margin: 0 auto; text-align: center; }
+
+    .fita-quote { font-size: clamp(1.5rem, 3vw, 2.4rem); font-weight: 300; font-style: italic; color: #fff; line-height: 1.3; }
+
+    .fita-quote strong { font-weight: 700; color: var(--amber-pale); font-style: normal; }
+
+    .fita-line { width: 50px; height: 2px; background: rgba(255,255,255,0.3); margin: 1.8rem auto; }
+
+    .fita-attr { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(255,255,255,0.4); }
+
+
+
+    /* MAPA */
+
+    .mapa-wrap { max-width: 1160px; margin: 0 auto; display: grid; grid-template-columns: 2fr 3fr; gap: 5rem; align-items: start; }
+
+    .mapa-detalhe { display: flex; flex-direction: column; gap: 1.5rem; margin: 2rem 0; }
+
+    .mapa-linha { display: flex; gap: 1rem; align-items: flex-start; }
+
+    .mapa-icon { font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+
+    .mapa-kv strong { display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-mid); margin-bottom: 3px; }
+
+    .mapa-kv span { font-size: 0.95rem; font-weight: 300; color: var(--warm-tan); line-height: 1.7; }
+
+    .mapa-frame-wrap {
+
+      border: 3px solid var(--terra);
+
+      outline: 8px solid var(--sand);
+
+      outline-offset: 0;
+
+      box-shadow: 0 8px 40px rgba(181,69,27,0.18);
+
+    }
+
+    .mapa-frame { height: 380px; display: block; }
+
+    .mapa-frame iframe { width: 100%; height: 100%; border: none; display: block; filter: saturate(0.65) contrast(1.1); }
+
+
+
+    /* RESERVA */
+
+    .reserva-wrap { max-width: 1160px; margin: 0 auto; display: grid; grid-template-columns: 2fr 3fr; gap: 6rem; align-items: start; }
+
+    .reserva-intro .sec-title { margin-bottom: 1.2rem; }
+
+    .reserva-intro p { font-size: 1rem; font-weight: 300; color: var(--warm-tan); line-height: 1.85; }
+
+
+
+    .date-shortcuts { display: flex; gap: 0.6rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
+
+    .date-shortcut { font-size: 0.72rem; font-weight: 500; background: var(--sand); color: var(--warm-mid); border: 1px solid var(--sand); padding: 0.3rem 0.8rem; cursor: pointer; transition: background 0.2s, color 0.2s; }
+
+    .date-shortcut:hover, .date-shortcut.active { background: var(--terra); color: #fff; border-color: var(--terra); }
+
+
+
+    .form { display: flex; flex-direction: column; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0 2rem; }
+
+    .form-field { margin-bottom: 1.6rem; }
+
+    .form-field label { display: block; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--warm-mid); margin-bottom: 0.4rem; }
+
+    .form-field input, .form-field select {
+
+      width: 100%; background: #fff; border: none;
+
+      border-bottom: 2px solid rgba(140,115,85,0.4);
+
+      padding: 0.7rem 0.5rem; font-family: var(--sys);
+
+      font-size: 1rem; font-weight: 400; color: var(--warm-dark);
+
+      outline: none; transition: border-color 0.25s;
+
+      appearance: none; -webkit-appearance: none;
+
+    }
+
+    .form-field input:focus, .form-field select:focus { border-color: var(--terra); }
+
+    .form-field input::placeholder { color: rgba(74,55,40,0.3); }
+
+
+
+    .select-wrap { position: relative; }
+
+    .select-wrap::after { content: '↓'; position: absolute; right: 0.5rem; top: 50%; transform: translateY(-50%); color: var(--warm-tan); pointer-events: none; font-size: 0.8rem; }
+
+    .select-wrap select { cursor: pointer; padding-right: 2rem; }
+
+
+
+    .submit-btn { background: var(--terra); color: #fff; border: none; padding: 1.1rem 2.8rem; font-family: var(--sys); font-size: 0.85rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: background 0.25s, transform 0.2s; }
+
+    .submit-btn:hover { background: var(--terra-dark); transform: translateY(-2px); }
+
+    .success-msg { display: none; margin-top: 1.2rem; font-size: 1rem; color: var(--terra-dark); line-height: 1.65; }
+
+
+
+    footer { background: var(--warm-dark); padding: 5rem 3.5rem 2.5rem; }
+
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3.5rem; padding-bottom: 3.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 2rem; }
+
+    .footer-logo { font-size: 1.4rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #fff; display: block; margin-bottom: 0.8rem; text-decoration: none; }
+
+    .footer-desc { font-size: 0.88rem; font-weight: 300; color: rgba(255,255,255,0.35); line-height: 1.8; max-width: 26ch; }
+
+    .footer-status { display: flex; align-items: center; gap: 0.5rem; margin-top: 1.5rem; }
+
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #6BCB77; animation: pulse 2s ease-in-out infinite; }
+
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.75)} }
+
+    .status-txt { font-size: 0.68rem; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.28); }
+
+    .footer-col h4 { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.28); margin-bottom: 1.2rem; }
+
+    .footer-col a, .footer-col p { font-size: 0.9rem; font-weight: 300; color: rgba(255,255,255,0.5); text-decoration: none; display: block; margin-bottom: 0.6rem; transition: color 0.25s; }
+
+    .footer-col a:hover { color: var(--amber-pale); }
+
+    .footer-bottom { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 300; color: rgba(255,255,255,0.2); }
+
+
+
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.85s ease, transform 0.85s ease; }
+
+    .reveal.visible { opacity: 1; transform: none; }
+
+    .rd1{transition-delay:0.08s} .rd2{transition-delay:0.18s} .rd3{transition-delay:0.28s}
+
+
+
+    @media (max-width: 900px) {
+
+      nav { padding: 0 1.5rem; }
+
+      .nav-links { display: none; }
+
+      .hero { padding: 64px 1.5rem 0; }
+
+      .hero-title { font-size: 2.6rem; }
+
+      .hero-stats { grid-template-columns: 1fr 1fr; }
+
+      .section { padding: 4rem 1.5rem; }
+
+      .menu-mosaic { grid-template-columns: 1fr; grid-template-rows: auto; }
+
+      .mi.feat { grid-row: auto; } .mi img { min-height: 260px; }
+
+      .sobre-wrap, .mapa-wrap, .reserva-wrap { grid-template-columns: 1fr; gap: 2.5rem; }
+
+      .sobre-imgs { height: 300px; }
+
+      .pilares-grid { grid-template-columns: 1fr; }
+
+      .galeria-grid { grid-template-columns: 1fr 1fr; }
+
+      .gal.wide { grid-column: auto; }
+
+      .gal.tall { grid-row: auto; }
+
+      .form-row { grid-template-columns: 1fr; }
+
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+
+
+<nav>
+
+  <a href="index.html" class="nav-logo">Mesas</a>
+
+  <div class="nav-block">
+
+    <ul class="nav-links" id="navTabs">
+
+      <li class="active"><a href="#menu">Menu</a></li>
+
+      <li><a href="ementa.html">Ementa</a></li>
+
+      <li><a href="#sobre">Sobre</a></li>
+
+      <li><a href="galeria.html">Galeria</a></li>
+
+      <li><a href="equipa.html">Equipa</a></li>
+
+      <li><a href="#localizacao">Localização</a></li>
+
+      <li><a href="#reserva">Reservas</a></li>
+
+    </ul>
+
+    <span class="nav-cursor" id="navCursor"></span>
+
+  </div>
+
+  <a href="#reserva" class="nav-cta">Reservar</a>
+
+</nav>
+
+
+
+<section class="hero">
+
+  <div class="hero-bg"></div>
+
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+
+    <span class="hero-eyebrow">Lisboa · Gastronomia Portuguesa · Est. 2012</span>
+
+    <h1 class="hero-title">Uma mesa,<br>uma <em>memória.</em></h1>
+
+    <p class="hero-desc">Cozinha portuguesa contemporânea. Ingredientes locais, sazonais, tratados com respeito e cozinhados com o coração.</p>
+
+    <div class="hero-btns">
+
+      <a href="#menu" class="btn-terra">Ver destaques</a>
+
+      <a href="ementa.html" class="btn-ghost">Ementa completa</a>
+
+    </div>
+
+  </div>
+
+  <div class="hero-stats">
+
+    <div class="hero-stat"><div class="stat-n">12+</div><div class="stat-l">Anos de cozinha</div></div>
+
+    <div class="hero-stat"><div class="stat-n">4.9 ★</div><div class="stat-l">Avaliação média</div></div>
+
+    <div class="hero-stat"><div class="stat-n">850+</div><div class="stat-l">Clientes por semana</div></div>
+
+    <div class="hero-stat"><div class="stat-n">12–23h</div><div class="stat-l">Todos os dias</div></div>
+
+  </div>
+
+</section>
+
+
+
+<div class="marquee-wrap">
+
+  <div class="marquee-inner">
+
+    <span class="marquee-item"><strong>Bacalhau à Brás</strong></span><span class="marquee-sep"> · </span>
+
+    <span class="marquee-item"><strong>Secretos Ibéricos</strong></span><span class="marquee-sep"> · </span>
+
+    <span class="marquee-item"><strong>Polvo à Lagareiro</strong></span><span class="marquee-sep"> · </span>
+
+    <span class="marquee-item"><strong>Leite Creme</strong></span><span class="marquee-sep"> · </span>
+
+    <span class="marquee-item"><strong>Caldo Verde</strong></span><span class="marquee-sep"> · </span>
+
+    <span class="marquee-item"><strong>Pastéis de Nata</strong></span><span class="marquee-sep"> · </span>
+
+    <span class="marquee-item"><strong>Bacalhau à Brás</strong></span><span class="marquee-sep"> · </span>
+
+    <span class="marquee-item"><strong>Secretos Ibéricos</strong></span><span class="marquee-sep"> · </span>
+
+    <span class="marquee-item"><strong>Polvo à Lagareiro</strong></span><span class="marquee-sep"> · </span>
+
+    <span class="marquee-item"><strong>Leite Creme</strong></span><span class="marquee-sep"> · </span>
+
+    <span class="marquee-item"><strong>Caldo Verde</strong></span><span class="marquee-sep"> · </span>
+
+    <span class="marquee-item"><strong>Pastéis de Nata</strong></span><span class="marquee-sep"> · </span>
+
+  </div>
+
+</div>
+
+
+
+<section class="section s-light reveal" id="menu">
+
+  <div class="menu-wrap">
+
+    <div class="menu-header">
+
+      <div>
+
+        <span class="sec-tag">Destaques</span>
+
+        <h2 class="sec-title">Os nossos <em>pratos favoritos</em></h2>
+
+      </div>
+
+      <a href="ementa.html" class="ver-tudo">Ementa completa →</a>
+
+    </div>
+
+    <div class="menu-note" style="max-width: 58ch; color: var(--warm-mid); line-height: 1.85;">
+
+      <p>O carrossel de pratos foi removido. Visita a ementa completa para ver todas as opções disponíveis no restaurante.</p>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<div class="sec-sep"></div>
+
+
+
+<section class="section s-sand reveal" id="sobre">
+
+  <div class="sobre-wrap">
+
+    <div class="sobre-imgs">
+
+      <div class="img-main"><img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=900&q=85" alt="Interior"></div>
+
+      <div class="img-accent"><img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600&q=85" alt="Detalhe"></div>
+
+    </div>
+
+    <div class="sobre-text">
+
+      <span class="sec-tag">A nossa história</span>
+
+      <h2 class="sec-title">Feitos com paixão,<br><em>servidos com alma.</em></h2>
+
+      <p class="sobre-body">Nascemos de uma ideia simples: trazer à mesa o melhor da cozinha portuguesa, sem complicações. Trabalhamos com produtores locais, respeitamos as épocas e cozinhamos com o coração.</p>
+
+      <p class="sobre-body">Cada prato conta uma história. Cada visita é uma memória que queremos que leves contigo para casa.</p>
+
+      <a href="equipa.html" class="btn-terra" style="margin-top:1.8rem;display:inline-block;">Conhecer a equipa</a>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<div class="sec-sep"></div>
+
+
+
+<section class="section s-light reveal" style="padding-top:3.5rem;padding-bottom:3.5rem;">
+
+  <div class="pilares-grid">
+
+    <div class="pilar reveal rd1">
+
+      <div class="pilar-n">01</div>
+
+      <div><div class="pilar-title">Ingredientes locais</div><p class="pilar-desc">Selecção diária de produtores num raio de 80 km. A frescura não é promessa — é protocolo.</p></div>
+
+    </div>
+
+    <div class="pilar reveal rd2">
+
+      <div class="pilar-n">02</div>
+
+      <div><div class="pilar-title">Menu sazonal</div><p class="pilar-desc">O menu muda com a estação. Só o que a natureza autoriza agora. Cada visita é diferente.</p></div>
+
+    </div>
+
+    <div class="pilar reveal rd3">
+
+      <div class="pilar-n">03</div>
+
+      <div><div class="pilar-title">Experiência íntima</div><p class="pilar-desc">Espaço cuidado, serviço atento, sem pressa. Uma boa refeição precisa de tempo.</p></div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<div class="sec-sep"></div>
+
+
+
+<section class="section s-sand reveal" id="galeria">
+
+  <div style="max-width:1160px;margin:0 auto;">
+
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2.5rem;">
+
+      <div><span class="sec-tag">Galeria</span><h2 class="sec-title">O nosso <em>espaço</em></h2></div>
+
+      <a href="galeria.html" class="ver-tudo">Ver galeria completa →</a>
+
+    </div>
+
+    <div class="galeria-grid">
+
+      <div class="gal" onclick="openLightbox('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1400&q=90')">
+
+        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&q=85" alt="Interior">
+
+        <div class="gal-overlay"><span>Ver foto</span></div>
+
+      </div>
+
+      <div class="gal wide" onclick="openLightbox('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1400&q=90')">
+
+        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=85" alt="Prato">
+
+        <div class="gal-overlay"><span>Ver foto</span></div>
+
+      </div>
+
+      <div class="gal wide" onclick="openLightbox('https://images.unsplash.com/photo-1559339352-11d035aa65de?w=1400&q=90')">
+
+        <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=900&q=85" alt="Sala">
+
+        <div class="gal-overlay"><span>Ver foto</span></div>
+
+      </div>
+
+      <div class="gal" onclick="openLightbox('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1000&q=90')">
+
+        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&q=85" alt="Bar">
+
+        <div class="gal-overlay"><span>Ver foto</span></div>
+
+      </div>
+
+      <div class="gal" onclick="openLightbox('https://images.unsplash.com/photo-1600891964599-f61ba0e24092?w=1000&q=90')">
+
+        <img src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092?w=500&q=85" alt="Carne">
+
+        <div class="gal-overlay"><span>Ver foto</span></div>
+
+      </div>
+
+      <div class="gal" onclick="openLightbox('https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=1000&q=90')">
+
+        <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=500&q=85" alt="Comida">
+
+        <div class="gal-overlay"><span>Ver foto</span></div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<section class="section s-terra reveal">
+
+  <div class="fita-inner">
+
+    <p class="fita-quote"><strong>Comer é um acto de memória.</strong><br>Nós fazemos questão de ser inesquecíveis.</p>
+
+    <div class="fita-line"></div>
+
+    <p class="fita-attr">— A nossa promessa desde 2012</p>
+
+  </div>
+
+</section>
+
+
+
+<section class="section s-light reveal" id="localizacao">
+
+  <div class="mapa-wrap">
+
+    <div>
+
+      <span class="sec-tag">Onde estamos</span>
+
+      <h2 class="sec-title">Encontra-nos<br><em>em Lisboa.</em></h2>
+
+      <div class="mapa-detalhe">
+
+        <div class="mapa-linha">
+
+          <span class="mapa-icon">📍</span>
+
+          <div class="mapa-kv"><strong>Morada</strong><span>Rua do Exemplo, 42<br>1200-000 Lisboa</span></div>
+
+        </div>
+
+        <div class="mapa-linha">
+
+          <span class="mapa-icon">🕐</span>
+
+          <div class="mapa-kv"><strong>Horário</strong><span>Segunda a Domingo · 12h00 – 23h00</span></div>
+
+        </div>
+
+        <div class="mapa-linha">
+
+          <span class="mapa-icon">📞</span>
+
+          <div class="mapa-kv"><strong>Contacto</strong><span>+351 910 000 000<br><a href="#">reservas@mesasl.com</a></span></div>
+
+        </div>
+
+      </div>
+
+      <a href="https://maps.google.com/?q=Chiado,Lisboa" target="_blank" class="btn-terra">Abrir no Google Maps →</a>
+
+    </div>
+
+    <div>
+
+      <div class="mapa-frame-wrap">
+
+        <div class="mapa-frame">
+
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3113.2!2d-9.1420269!3d38.7107555!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd19347f6d912b0b%3A0x400ebbde490b4c0!2sChiado%2C%20Lisboa!5e0!3m2!1spt!2spt!4v1700000000000" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<div class="sec-sep"></div>
+
+
+
+<section class="section s-sand reveal" id="reserva">
+
+  <div class="reserva-wrap">
+
+    <div class="reserva-intro">
+
+      <span class="sec-tag">Reservas</span>
+
+      <h2 class="sec-title">Garante<br>a tua <em>mesa.</em></h2>
+
+      <p>Reservas para grupos até 20 pessoas. Para eventos especiais contacta-nos diretamente.</p>
+
+    </div>
+
+    <div>
+
+      <div class="form" id="reservaForm">
+
+        <div class="form-row">
+
+          <div class="form-field">
+
+            <label>Nome</label>
+
+            <input type="text" id="nome" placeholder="O teu nome">
+
+          </div>
+
+          <div class="form-field">
+
+            <label>Telemóvel</label>
+
+            <input type="tel" id="tel" placeholder="+351 9xx xxx xxx">
+
+          </div>
+
+        </div>
+
+        <div class="form-field">
+
+          <label>Data</label>
+
+          <div class="date-shortcuts" id="dateShortcuts">
+
+            <button class="date-shortcut" onclick="setDate(0, this)">Hoje</button>
+
+            <button class="date-shortcut" onclick="setDate(1, this)">Amanhã</button>
+
+            <button class="date-shortcut" onclick="setDate(2, this)">Depois de amanhã</button>
+
+            <button class="date-shortcut" onclick="setDate(7, this)">Próxima semana</button>
+
+          </div>
+
+          <input type="date" id="data" oninput="clearShortcuts()">
+
+        </div>
+
+        <div class="form-row">
+
+          <div class="form-field">
+
+            <label>Hora</label>
+
+            <div class="select-wrap">
+
+              <select id="hora">
+
+                <option value="">Escolher hora</option>
+
+                <optgroup label="Almoço">
+
+                  <option>12:00</option><option>12:30</option>
+
+                  <option>13:00</option><option>13:30</option><option>14:00</option>
+
+                </optgroup>
+
+                <optgroup label="Jantar">
+
+                  <option>19:00</option><option>19:30</option><option>20:00</option>
+
+                  <option>20:30</option><option>21:00</option><option>21:30</option><option>22:00</option>
+
+                </optgroup>
+
+              </select>
+
+            </div>
+
+          </div>
+
+          <div class="form-field">
+
+            <label>Pessoas</label>
+
+            <div class="select-wrap">
+
+              <select id="pessoas">
+
+                <option value="">Quantas pessoas?</option>
+
+                <option value="1">1 pessoa</option>
+
+                <option value="2">2 pessoas</option>
+
+                <option value="3">3 pessoas</option>
+
+                <option value="4">4 pessoas</option>
+
+                <option value="5">5 pessoas</option>
+
+                <option value="6">6 pessoas</option>
+
+                <option value="7">7 pessoas</option>
+
+                <option value="8">8 pessoas</option>
+
+                <option value="9+">9 ou mais pessoas</option>
+
+              </select>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <button class="submit-btn" onclick="submeterReserva()">Confirmar reserva</button>
+
+        <div class="success-msg" id="successMsg"></div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<footer>
+
+  <div class="footer-grid">
+
+    <div>
+
+      <a href="index.html" class="footer-logo">Mesas</a>
+
+      <p class="footer-desc">Cozinha portuguesa contemporânea no coração de Lisboa.</p>
+
+      <div class="footer-status">
+
+        <div class="status-dot"></div>
+
+        <span class="status-txt">Aberto hoje · 12h – 23h</span>
+
+      </div>
+
+    </div>
+
+    <div class="footer-col">
+
+      <h4>Menu</h4>
+
+      <a href="ementa.html">Ementa completa</a>
+
+      <a href="ementa.html#entradas">Entradas</a>
+
+      <a href="ementa.html#pratos">Pratos principais</a>
+
+      <a href="ementa.html#sobremesas">Sobremesas</a>
+
+    </div>
+
+    <div class="footer-col">
+
+      <h4>Restaurante</h4>
+
+      <a href="#sobre">Sobre nós</a>
+
+      <a href="equipa.html">Equipa</a>
+
+      <a href="galeria.html">Galeria</a>
+
+      <a href="#localizacao">Localização</a>
+
+    </div>
+
+    <div class="footer-col">
+
+      <h4>Contacto</h4>
+
+      <p>+351 910 000 000</p>
+
+      <p><a href="#">reservas@mesasl.com</a></p>
+
+      <a href="https://instagram.com" target="_blank">Instagram</a>
+
+      <a href="https://facebook.com" target="_blank">Facebook</a>
+
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+
+    <span>© 2026 Mesas · Lisboa</span>
+
+    <span>Feito com paixão</span>
+
+  </div>
+
+</footer>
+
+
+
+<div class="lightbox" id="lightbox" onclick="closeLightboxOutside(event)">
+
+  <button class="lb-close" onclick="closeLightbox()">×</button>
+
+  <button class="lb-prev" onclick="lbNav(-1)">‹</button>
+
+  <img id="lb-img" src="" alt="">
+
+  <button class="lb-next" onclick="lbNav(1)">›</button>
+
+  <div class="lb-counter" id="lb-counter"></div>
+
+</div>
+
+
+
+<script>
+
+  const navTabs = Array.from(document.querySelectorAll('#navTabs li'));
+
+  const navCursor = document.getElementById('navCursor');
+
+
+
+  function updateNavCursor(tab) {
+
+    const rect = tab.getBoundingClientRect();
+
+    const parentRect = tab.parentElement.getBoundingClientRect();
+
+    navCursor.style.width = `${rect.width}px`;
+
+    navCursor.style.transform = `translateX(${rect.left - parentRect.left}px) translateY(-50%)`;
+
+    navCursor.style.opacity = '1';
+
+  }
+
+
+
+  navTabs.forEach(tab => {
+
+    tab.addEventListener('mouseenter', () => updateNavCursor(tab));
+
+    tab.addEventListener('click', () => {
+
+      navTabs.forEach(item => item.classList.remove('active'));
+
+      tab.classList.add('active');
+
+      updateNavCursor(tab);
+
+    });
+
+  });
+
+
+
+  document.querySelector('nav').addEventListener('mouseleave', () => {
+
+    const activeTab = document.querySelector('#navTabs li.active');
+
+    if (activeTab) updateNavCursor(activeTab);
+
+  });
+
+
+
+  window.addEventListener('load', () => updateNavCursor(document.querySelector('#navTabs li.active')));
+
+
+
+  const obs = new IntersectionObserver(entries => {
+
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+
+  }, { threshold: 0.07 });
+
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+
+
+  function openLightbox(src) {
+
+    const imgs = Array.from(document.querySelectorAll('.gal img, .mi img')).map(i => i.src.replace(/w=\d+/, 'w=1400').replace(/q=\d+/, 'q=90'));
+
+    window.lbImages = imgs;
+
+    window.lbCurrent = imgs.findIndex(i => i.includes(src.split('photo-')[1]?.split('?')[0]) || i === src);
+
+    if (window.lbCurrent < 0) window.lbCurrent = 0;
+
+    document.getElementById('lb-img').src = window.lbImages[window.lbCurrent];
+
+    document.getElementById('lb-counter').textContent = `${window.lbCurrent + 1} / ${window.lbImages.length}`;
+
+    document.getElementById('lightbox').classList.add('open');
+
+    document.body.style.overflow = 'hidden';
+
+  }
+
+
+
+  function closeLightbox() {
+
+    document.getElementById('lightbox').classList.remove('open');
+
+    document.body.style.overflow = '';
+
+  }
+
+
+
+  function closeLightboxOutside(e) { if (e.target === document.getElementById('lightbox')) closeLightbox(); }
+
+
+
+  function lbNav(dir) {
+
+    window.lbCurrent = (window.lbCurrent + dir + window.lbImages.length) % window.lbImages.length;
+
+    document.getElementById('lb-img').src = window.lbImages[window.lbCurrent];
+
+    document.getElementById('lb-counter').textContent = `${window.lbCurrent + 1} / ${window.lbImages.length}`;
+
+  }
+
+
+
+  document.addEventListener('keydown', e => {
+
+    if (!document.getElementById('lightbox').classList.contains('open')) return;
+
+    if (e.key === 'Escape') closeLightbox();
+
+    if (e.key === 'ArrowLeft') lbNav(-1);
+
+    if (e.key === 'ArrowRight') lbNav(1);
+
+  });
+
+
+
+  function setDate(daysFromNow, button) {
+
+    const d = new Date();
+
+    d.setDate(d.getDate() + daysFromNow);
+
+    document.getElementById('data').value = d.toISOString().split('T')[0];
+
+    document.querySelectorAll('.date-shortcut').forEach(b => b.classList.remove('active'));
+
+    if (button) button.classList.add('active');
+
+  }
+
+
+
+  function clearShortcuts() {
+
+    document.querySelectorAll('.date-shortcut').forEach(b => b.classList.remove('active'));
+
+  }
+
+
+
+  async function submeterReserva() {
+
+    const nome = document.getElementById('nome').value.trim();
+
+    const tel = document.getElementById('tel').value.trim();
+
+    const data = document.getElementById('data').value;
+
+    const hora = document.getElementById('hora').value;
+
+    const pess = document.getElementById('pessoas').value;
+
+    const submitBtn = document.querySelector('.submit-btn');
+
+    const msg = document.getElementById('successMsg');
+
+    if (!nome || !tel || !data || !hora || !pess) {
+
+      alert('Por favor preenche todos os campos.');
+
+      return;
+
+    }
+
+    submitBtn.disabled = true;
+
+    submitBtn.textContent = 'A enviar...';
+
+    try {
+      const resp = await fetch('/api/reservas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, tel, data, hora, pessoas: pess }),
+      });
+
+      const result = await resp.json();
+      if (!resp.ok || !result.success) {
+        throw new Error(result.message || 'Erro ao enviar reserva.');
+      }
+
+      msg.textContent = result.message || `Reserva confirmada para ${nome} dia ${data} às ${hora} para ${pess}.`;
+      msg.style.display = 'block';
+      document.getElementById('nome').value = '';
+      document.getElementById('tel').value = '';
+      document.getElementById('data').value = '';
+      document.getElementById('hora').value = '';
+      document.getElementById('pessoas').value = '';
+      document.querySelectorAll('.date-shortcut').forEach(b => b.classList.remove('active'));
+    } catch (error) {
+      alert(error.message || 'Não foi possível registar a reserva.');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Confirmar reserva';
+    }
+
+  }
+
+</script>
+
+</body>
+
+</html>
+
