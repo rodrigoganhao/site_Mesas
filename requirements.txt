@@ -1,0 +1,2 @@
+# Dependências Python
+# (Neste momento não há bibliotecas externas necessárias)
