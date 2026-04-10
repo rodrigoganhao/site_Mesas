@@ -71,10 +71,6 @@ class ReservationHandler(SimpleHTTPRequestHandler):
         })
 
     def do_GET(self):
-        # Redirecionar root para index.html
-        if self.path == '/':
-            self.path = '/index.html'
-        
         # API de reservas
         if self.path == '/api/reservas':
             try:
@@ -84,9 +80,20 @@ class ReservationHandler(SimpleHTTPRequestHandler):
             self._send_json(200, {'success': True, 'reservas': reservas})
             return
         
-        # Evitar listagem de diretórios
-        if self.path.endswith('/'):
-            self.path = self.path + 'index.html'
+        # Redirecionar root para index.html
+        if self.path == '/':
+            self.path = '/index.html'
+        
+        # URLs limpos: /ementa -> /ementa.html
+        # Mas só se NÃO for ficheiro estático (css, js, imagens)
+        elif not '.' in self.path.split('/')[-1]:
+            # Verifica se existe o ficheiro .html
+            html_file = Path('.' + self.path + '.html')
+            if html_file.exists():
+                self.path = self.path + '.html'
+            # Se termina com /, adiciona index.html
+            elif self.path.endswith('/'):
+                self.path = self.path + 'index.html'
         
         # Servir ficheiros estáticos normalmente
         super().do_GET()
