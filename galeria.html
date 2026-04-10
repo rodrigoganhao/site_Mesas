@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galeria — Mesas Lisboa</title>
+  <style>
+    :root {
+      --terra: #B5451B; --terra-dark: #8A3212; --amber: #C8892A; --amber-pale: #F0D9B0;
+      --warm-dark: #1E1510; --warm-mid: #4A3728; --warm-tan: #8C7355;
+      --sand: #E8DCC8; --sand-light: #F4EDE0; --parchment: #FAF6EE;
+      --sys: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sys); background: var(--warm-dark); color: #fff; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: var(--terra); display: flex; justify-content: space-between; align-items: center; padding: 0 3.5rem; height: 64px; box-shadow: 0 2px 20px rgba(30,21,16,0.3); }
+    .nav-logo { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: #fff; text-decoration: none; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-size: 0.8rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.75); text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: #fff; }
+    .nav-cta { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--terra); background: #fff; padding: 0.55rem 1.4rem; text-decoration: none; }
+    .nav-cta:hover { background: var(--amber-pale); }
+    .nav-block { position: relative; display: flex; align-items: center; }
+    .nav-cursor { position: absolute; top: 50%; left: 0; height: 40px; width: 0; border-radius: 9999px; background: rgba(255,255,255,0.18); transition: transform 0.25s ease, width 0.25s ease, opacity 0.25s ease; pointer-events: none; opacity: 0; transform: translateY(-50%); }
+
+    .page-hero { padding: 120px 3.5rem 5rem; position: relative; overflow: hidden; }
+    .page-hero::before { content: ''; position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1400&q=60'); background-size: cover; background-position: center; opacity: 0.15; }
+    .page-hero-inner { position: relative; z-index: 2; }
+    .breadcrumb { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 1rem; }
+    .breadcrumb a { color: var(--amber); text-decoration: none; }
+    .page-title { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700; color: #fff; line-height: 1.08; margin-bottom: 0.8rem; }
+    .page-title em { font-style: italic; color: var(--amber-pale); font-weight: 300; }
+    .page-subtitle { font-size: 1rem; font-weight: 300; color: rgba(255,255,255,0.45); max-width: 50ch; }
+
+    /* filtros */
+    .filters { display: flex; gap: 0.6rem; padding: 0 3.5rem 3rem; flex-wrap: wrap; }
+    .filter-btn { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.5rem 1.2rem; border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.5); background: transparent; cursor: pointer; transition: all 0.2s; }
+    .filter-btn:hover, .filter-btn.active { background: var(--terra); border-color: var(--terra); color: #fff; }
+
+    /* masonry */
+    .gallery-masonry { columns: 3; gap: 6px; padding: 0 3.5rem 6rem; }
+    .gal-item { break-inside: avoid; margin-bottom: 6px; cursor: pointer; overflow: hidden; position: relative; display: block; }
+    .gal-item img { width: 100%; display: block; transition: transform 0.6s ease, filter 0.3s; filter: brightness(0.88) saturate(0.85); }
+    .gal-item:hover img { transform: scale(1.04); filter: brightness(0.72) saturate(1); }
+    .gal-item-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 1.5rem; background: linear-gradient(transparent 50%, rgba(20,14,8,0.75)); opacity: 0; transition: opacity 0.3s; }
+    .gal-item:hover .gal-item-overlay { opacity: 1; }
+    .gal-caption { font-size: 0.85rem; font-weight: 500; color: #fff; }
+    .gal-cat { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--amber); margin-bottom: 0.3rem; }
+
+    /* lightbox */
+    .lightbox { display: none; position: fixed; inset: 0; background: rgba(8,5,3,0.97); z-index: 1000; align-items: center; justify-content: center; flex-direction: column; }
+    .lightbox.open { display: flex; }
+    .lb-img-wrap { position: relative; max-width: 90vw; max-height: 82vh; display: flex; align-items: center; justify-content: center; }
+    .lightbox img { max-width: 90vw; max-height: 80vh; object-fit: contain; display: block; }
+    .lb-close { position: absolute; top: 1.5rem; right: 2rem; color: rgba(255,255,255,0.6); font-size: 2rem; cursor: pointer; background: none; border: none; transition: color 0.2s; line-height: 1; z-index: 10; }
+    .lb-close:hover { color: #fff; }
+    .lb-prev, .lb-next { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); font-size: 1.4rem; padding: 1rem 1.2rem; cursor: pointer; transition: background 0.2s, color 0.2s; }
+    .lb-prev:hover, .lb-next:hover { background: rgba(255,255,255,0.18); color: #fff; }
+    .lb-prev { left: 1.5rem; }
+    .lb-next { right: 1.5rem; }
+    .lb-info { margin-top: 1.2rem; text-align: center; }
+    .lb-caption { font-size: 0.9rem; font-weight: 500; color: rgba(255,255,255,0.8); margin-bottom: 0.3rem; }
+    .lb-counter { font-size: 0.72rem; letter-spacing: 0.12em; color: rgba(255,255,255,0.3); }
+
+    footer { background: #0D0A07; padding: 2.5rem 3.5rem; border-top: 1px solid rgba(255,255,255,0.06); }
+    .footer-simple { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .footer-logo { font-size: 1.2rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #fff; text-decoration: none; }
+    .footer-links { display: flex; gap: 2rem; }
+    .footer-links a { font-size: 0.82rem; font-weight: 300; color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--amber-pale); }
+
+    @media (max-width: 900px) {
+      nav { padding: 0 1.5rem; } .nav-links { display: none; }
+      .page-hero { padding: 100px 1.5rem 3rem; }
+      .filters { padding: 0 1.5rem 2rem; }
+      .gallery-masonry { columns: 2; padding: 0 1.5rem 4rem; }
+    }
+    @media (max-width: 540px) { .gallery-masonry { columns: 1; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index2.html" class="nav-logo">Mesas</a>
+  <div class="nav-block">
+    <ul class="nav-links" id="navTabs">
+      <li><a href="index2.html#menu">Menu</a></li>
+      <li><a href="ementa.html">Ementa</a></li>
+      <li><a href="index2.html#sobre">Sobre</a></li>
+      <li class="active"><a href="galeria.html">Galeria</a></li>
+      <li><a href="equipa.html">Equipa</a></li>
+      <li><a href="index2.html#localizacao">Localização</a></li>
+      <li><a href="index2.html#reserva">Reservas</a></li>
+    </ul>
+    <span class="nav-cursor" id="navCursor"></span>
+  </div>
+  <a href="index2.html#reserva" class="nav-cta">Reservar</a>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <p class="breadcrumb"><a href="index2.html">Início</a> → Galeria</p>
+    <h1 class="page-title">O nosso<br><em>espaço</em></h1>
+    <p class="page-subtitle">Uma janela para o que nos move — o espaço, os pratos, as pessoas e os momentos que fazemos acontecer.</p>
+  </div>
+</div>
+
+<div class="filters">
+  <button class="filter-btn active" onclick="filterGal('all', this)">Tudo</button>
+  <button class="filter-btn" onclick="filterGal('espaco', this)">Espaço</button>
+  <button class="filter-btn" onclick="filterGal('pratos', this)">Pratos</button>
+  <button class="filter-btn" onclick="filterGal('momentos', this)">Momentos</button>
+</div>
+
+<div class="gallery-masonry" id="galleryGrid">
+  <div class="gal-item" data-cat="espaco" data-caption="Sala principal" onclick="openLB(0)">
+    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=85" alt="Sala principal">
+    <div class="gal-item-overlay"><div class="gal-cat">Espaço</div><div class="gal-caption">Sala principal</div></div>
+  </div>
+  <div class="gal-item" data-cat="pratos" data-caption="Secretos Ibéricos" onclick="openLB(1)">
+    <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=800&q=85" alt="Secretos">
+    <div class="gal-item-overlay"><div class="gal-cat">Pratos</div><div class="gal-caption">Secretos Ibéricos</div></div>
+  </div>
+  <div class="gal-item" data-cat="espaco" data-caption="Zona do bar" onclick="openLB(2)">
+    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=85" alt="Bar">
+    <div class="gal-item-overlay"><div class="gal-cat">Espaço</div><div class="gal-caption">Zona do bar</div></div>
+  </div>
+  <div class="gal-item" data-cat="pratos" data-caption="Bacalhau à Brás" onclick="openLB(3)">
+    <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=85" alt="Bacalhau">
+    <div class="gal-item-overlay"><div class="gal-cat">Pratos</div><div class="gal-caption">Bacalhau à Brás</div></div>
+  </div>
+  <div class="gal-item" data-cat="espaco" data-caption="Interior ao fim do dia" onclick="openLB(4)">
+    <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=85" alt="Interior">
+    <div class="gal-item-overlay"><div class="gal-cat">Espaço</div><div class="gal-caption">Interior ao fim do dia</div></div>
+  </div>
+  <div class="gal-item" data-cat="pratos" data-caption="Leite Creme" onclick="openLB(5)">
+    <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?w=800&q=85" alt="Leite Creme">
+    <div class="gal-item-overlay"><div class="gal-cat">Pratos</div><div class="gal-caption">Leite Creme</div></div>
+  </div>
+  <div class="gal-item" data-cat="pratos" data-caption="Carne grelhada" onclick="openLB(6)">
+    <img src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092?w=800&q=85" alt="Carne">
+    <div class="gal-item-overlay"><div class="gal-cat">Pratos</div><div class="gal-caption">Carne grelhada</div></div>
+  </div>
+  <div class="gal-item" data-cat="momentos" data-caption="Mesa posta" onclick="openLB(7)">
+    <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=85" alt="Mesa">
+    <div class="gal-item-overlay"><div class="gal-cat">Momentos</div><div class="gal-caption">Mesa posta</div></div>
+  </div>
+  <div class="gal-item" data-cat="pratos" data-caption="Prato colorido" onclick="openLB(8)">
+    <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=800&q=85" alt="Prato">
+    <div class="gal-item-overlay"><div class="gal-cat">Pratos</div><div class="gal-caption">Prato do dia</div></div>
+  </div>
+  <div class="gal-item" data-cat="pratos" data-caption="Polvo à Lagareiro" onclick="openLB(9)">
+    <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=800&q=85" alt="Polvo">
+    <div class="gal-item-overlay"><div class="gal-cat">Pratos</div><div class="gal-caption">Polvo à Lagareiro</div></div>
+  </div>
+  <div class="gal-item" data-cat="momentos" data-caption="Noite no restaurante" onclick="openLB(10)">
+    <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=85" alt="Noite">
+    <div class="gal-item-overlay"><div class="gal-cat">Momentos</div><div class="gal-caption">Noite no restaurante</div></div>
+  </div>
+  <div class="gal-item" data-cat="espaco" data-caption="Detalhes da mesa" onclick="openLB(11)">
+    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=85" alt="Mesa">
+    <div class="gal-item-overlay"><div class="gal-cat">Espaço</div><div class="gal-caption">Detalhes da mesa</div></div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="closeLBOutside(event)">
+  <button class="lb-close" onclick="closeLB()">×</button>
+  <button class="lb-prev" onclick="lbNav(-1)">‹</button>
+  <div class="lb-img-wrap">
+    <img id="lb-img" src="" alt="">
+  </div>
+  <button class="lb-next" onclick="lbNav(1)">›</button>
+  <div class="lb-info">
+    <div class="lb-caption" id="lb-caption"></div>
+    <div class="lb-counter" id="lb-counter"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-simple">
+    <a href="index2.html" class="footer-logo">Mesas</a>
+    <div class="footer-links">
+      <a href="index2.html">Início</a>
+      <a href="ementa.html">Ementa</a>
+      <a href="equipa.html">Equipa</a>
+      <a href="index2.html#reserva">Reservar</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  let lbItems = [];
+  let lbCur = 0;
+
+  function buildItems() {
+    lbItems = Array.from(document.querySelectorAll('.gal-item:not([style*="display: none"])')).map(el => ({
+      src: el.querySelector('img').src.replace(/w=\d+/, 'w=1400'),
+      caption: el.dataset.caption
+    }));
+  }
+
+  function openLB(originalIdx) {
+    buildItems();
+    const clickedEl = document.querySelectorAll('.gal-item')[originalIdx];
+    const caption = clickedEl.dataset.caption;
+    lbCur = lbItems.findIndex(i => i.caption === caption);
+    if (lbCur < 0) lbCur = 0;
+    updateLB();
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function updateLB() {
+    document.getElementById('lb-img').src = lbItems[lbCur].src;
+    document.getElementById('lb-caption').textContent = lbItems[lbCur].caption;
+    document.getElementById('lb-counter').textContent = (lbCur + 1) + ' / ' + lbItems.length;
+  }
+
+  function closeLB() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function closeLBOutside(e) { if (e.target === document.getElementById('lightbox')) closeLB(); }
+  function lbNav(d) { lbCur = (lbCur + d + lbItems.length) % lbItems.length; updateLB(); }
+
+  document.addEventListener('keydown', e => {
+    if (!document.getElementById('lightbox').classList.contains('open')) return;
+    if (e.key === 'Escape') closeLB();
+    if (e.key === 'ArrowLeft') lbNav(-1);
+    if (e.key === 'ArrowRight') lbNav(1);
+  });
+
+  function filterGal(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.gal-item').forEach(el => {
+      el.style.display = (cat === 'all' || el.dataset.cat === cat) ? 'block' : 'none';
+    });
+  }
+
+  const navTabs = Array.from(document.querySelectorAll('#navTabs li'));
+  const navCursor = document.getElementById('navCursor');
+  function updateNavCursor(tab) {
+    const rect = tab.getBoundingClientRect();
+    const parentRect = tab.parentElement.getBoundingClientRect();
+    navCursor.style.width = `${rect.width}px`;
+    navCursor.style.transform = `translateX(${rect.left - parentRect.left}px) translateY(-50%)`;
+    navCursor.style.opacity = '1';
+  }
+  if (navTabs.length && navCursor) {
+    navTabs.forEach(tab => {
+      tab.addEventListener('mouseenter', () => updateNavCursor(tab));
+      tab.addEventListener('click', () => {
+        navTabs.forEach(item => item.classList.remove('active'));
+        tab.classList.add('active');
+        updateNavCursor(tab);
+      });
+    });
+    document.querySelector('nav').addEventListener('mouseleave', () => {
+      const activeTab = document.querySelector('#navTabs li.active');
+      if (activeTab) updateNavCursor(activeTab);
+    });
+    window.addEventListener('load', () => {
+      const activeTab = document.querySelector('#navTabs li.active');
+      if (activeTab) updateNavCursor(activeTab);
+    });
+  }
+</script>
+</body>
+</html>

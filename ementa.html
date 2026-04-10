@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ementa — Mesas Lisboa</title>
+  <style>
+    :root {
+      --terra: #B5451B; --terra-dark: #8A3212; --amber: #C8892A; --amber-pale: #F0D9B0;
+      --warm-dark: #1E1510; --warm-mid: #4A3728; --warm-tan: #8C7355;
+      --sand: #E8DCC8; --sand-light: #F4EDE0; --parchment: #FAF6EE;
+      --sys: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sys); background: var(--parchment); color: var(--warm-dark); }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: var(--terra); display: flex; justify-content: space-between; align-items: center; padding: 0 3.5rem; height: 64px; box-shadow: 0 2px 20px rgba(30,21,16,0.3); }
+    .nav-logo { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: #fff; text-decoration: none; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-size: 0.8rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.75); text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: #fff; }
+    .nav-cta { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--terra); background: #fff; padding: 0.55rem 1.4rem; text-decoration: none; }
+    .nav-cta:hover { background: var(--amber-pale); }
+    .nav-block { position: relative; display: flex; align-items: center; }
+    .nav-cursor { position: absolute; top: 50%; left: 0; height: 40px; width: 0; border-radius: 9999px; background: rgba(255,255,255,0.18); transition: transform 0.25s ease, width 0.25s ease, opacity 0.25s ease; pointer-events: none; opacity: 0; transform: translateY(-50%); }
+
+    .page-hero { padding: 120px 3.5rem 4rem; background: var(--warm-dark); position: relative; overflow: hidden; }
+    .page-hero::before { content: ''; position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1400&q=70'); background-size: cover; background-position: center; opacity: 0.12; }
+    .page-hero-inner { position: relative; z-index: 2; max-width: 800px; }
+    .breadcrumb { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 1rem; }
+    .breadcrumb a { color: var(--amber); text-decoration: none; }
+    .page-title { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700; color: #fff; line-height: 1.08; margin-bottom: 1rem; }
+    .page-title em { font-style: italic; color: var(--amber-pale); font-weight: 300; }
+    .page-subtitle { font-size: 1rem; font-weight: 300; color: rgba(255,255,255,0.55); line-height: 1.8; max-width: 50ch; }
+
+    /* sticky menu cats */
+    .cat-nav { position: sticky; top: 64px; z-index: 100; background: var(--sand-light); border-bottom: 2px solid var(--terra); display: flex; gap: 0; overflow-x: auto; }
+    .cat-nav a { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-tan); text-decoration: none; padding: 1rem 1.8rem; white-space: nowrap; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: color 0.2s, border-color 0.2s; }
+    .cat-nav a:hover, .cat-nav a.active { color: var(--terra); border-bottom-color: var(--terra); }
+
+    .ementa-wrap { max-width: 960px; margin: 0 auto; padding: 4rem 3.5rem 6rem; }
+
+    .ementa-section { margin-bottom: 4rem; }
+    .ementa-section-title { font-size: 1.6rem; font-weight: 700; color: var(--warm-dark); padding-bottom: 0.8rem; border-bottom: 2px solid var(--sand); margin-bottom: 0.4rem; display: flex; align-items: baseline; gap: 1rem; }
+    .ementa-section-title em { font-style: italic; font-weight: 400; font-size: 1rem; color: var(--warm-tan); }
+    .ementa-note { font-size: 0.82rem; font-weight: 300; color: var(--warm-tan); margin-bottom: 2rem; padding-top: 0.4rem; }
+
+    .prato { display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: start; padding: 1.2rem 0; border-bottom: 1px solid rgba(232,220,200,0.7); transition: background 0.2s; }
+    .prato:last-child { border-bottom: none; }
+    .prato:hover { background: var(--sand-light); margin: 0 -1rem; padding: 1.2rem 1rem; }
+    .prato-name { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.3rem; }
+    .prato-desc { font-size: 0.88rem; font-weight: 300; color: var(--warm-tan); line-height: 1.6; }
+    .prato-tags { display: flex; gap: 0.4rem; margin-top: 0.5rem; flex-wrap: wrap; }
+    .tag { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.2rem 0.6rem; }
+      .tag-veg { background: #d4edda; color: #2d6a4f; }
+      .tag-new { background: #fce4d6; color: var(--terra-dark); }
+      .tag-hot { background: #fff3cd; color: #856404; }
+      .tag-chef { background: var(--sand); color: var(--warm-mid); }
+    .prato-price { font-size: 1.1rem; font-weight: 700; color: var(--terra); white-space: nowrap; padding-top: 2px; }
+
+    .sec-sep { height: 4px; background: linear-gradient(to right, var(--terra), var(--amber), var(--terra)); opacity: 0.25; margin: 3rem 0; }
+
+    /* CTA reserva no fim */
+    .ementa-cta { background: var(--warm-dark); padding: 3.5rem; text-align: center; }
+    .ementa-cta p { font-size: 1.1rem; font-weight: 300; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; }
+    .btn-terra { font-size: 0.85rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; background: var(--terra); color: #fff; padding: 1rem 2.2rem; text-decoration: none; display: inline-block; transition: background 0.25s; }
+    .btn-terra:hover { background: var(--terra-dark); }
+
+    footer { background: var(--warm-dark); padding: 3rem 3.5rem 2rem; border-top: 1px solid rgba(255,255,255,0.06); }
+    .footer-simple { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .footer-logo { font-size: 1.2rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #fff; text-decoration: none; }
+    .footer-links { display: flex; gap: 2rem; }
+    .footer-links a { font-size: 0.82rem; font-weight: 300; color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--amber-pale); }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 1.5rem; }
+      .nav-links { display: none; }
+      .page-hero { padding: 100px 1.5rem 3rem; }
+      .ementa-wrap { padding: 3rem 1.5rem 4rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index2.html" class="nav-logo">Mesas</a>
+  <div class="nav-block">
+    <ul class="nav-links" id="navTabs">
+      <li><a href="index2.html#menu">Menu</a></li>
+      <li class="active"><a href="ementa.html">Ementa</a></li>
+      <li><a href="index2.html#sobre">Sobre</a></li>
+      <li><a href="galeria.html">Galeria</a></li>
+      <li><a href="equipa.html">Equipa</a></li>
+      <li><a href="index2.html#localizacao">Localização</a></li>
+      <li><a href="index2.html#reserva">Reservas</a></li>
+    </ul>
+    <span class="nav-cursor" id="navCursor"></span>
+  </div>
+  <a href="index2.html#reserva" class="nav-cta">Reservar</a>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <p class="breadcrumb"><a href="index2.html">Início</a> → Ementa</p>
+    <h1 class="page-title">A nossa<br><em>ementa</em></h1>
+    <p class="page-subtitle">Cozinha portuguesa contemporânea. Ingredientes sazonais, receitas com alma. A ementa muda regularmente para acompanhar o melhor de cada época.</p>
+  </div>
+</div>
+
+<div class="cat-nav">
+  <a href="#entradas">Entradas</a>
+  <a href="#sopas">Sopas</a>
+  <a href="#peixe">Peixe</a>
+  <a href="#carne">Carne</a>
+  <a href="#vegetariano">Vegetariano</a>
+  <a href="#sobremesas">Sobremesas</a>
+  <a href="#vinhos">Vinhos</a>
+</div>
+
+<div class="ementa-wrap">
+
+  <!-- ENTRADAS -->
+  <div class="ementa-section" id="entradas">
+    <h2 class="ementa-section-title">Entradas <em>Para começar</em></h2>
+    <p class="ementa-note">Sugerimos partilhar 2 a 3 entradas por mesa.</p>
+
+    <div class="prato">
+      <div>
+        <div class="prato-name">Pão com manteiga de ovelha e flor de sal</div>
+        <div class="prato-desc">Pão de fermentação lenta, manteiga artesanal de ovelha transmontana, flor de sal do Algarve.</div>
+        <div class="prato-tags"><span class="tag tag-veg">Vegetariano</span></div>
+      </div>
+      <div class="prato-price">4,50 €</div>
+    </div>
+    <div class="prato">
+      <div>
+        <div class="prato-name">Alheira de caça grelhada com ovo estrelado</div>
+        <div class="prato-desc">Alheira artesanal de Mirandela, grelhada, ovo de galinha do campo, batata palha crocante.</div>
+        <div class="prato-tags"><span class="tag tag-chef">Sugestão do chef</span></div>
+      </div>
+      <div class="prato-price">9,00 €</div>
+    </div>
+    <div class="prato">
+      <div>
+        <div class="prato-name">Presunto ibérico com melão e rúcula</div>
+        <div class="prato-desc">Presunto Pata Negra 36 meses, melão de Almeirim, rúcula selvagem, redução de balsâmico.</div>
+      </div>
+      <div class="prato-price">11,50 €</div>
+    </div>
+    <div class="prato">
+      <div>
+        <div class="prato-name">Amêijoas à Bulhão Pato</div>
+        <div class="prato-desc">Amêijoas frescas do Sado, azeite extra virgem, alho, coentros, vinho branco do Alentejo.</div>
+        <div class="prato-tags"><span class="tag tag-hot">Muito pedido</span></div>
+      </div>
+      <div class="prato-price">14,00 €</div>
+    </div>
+    <div class="prato">
+      <div>
+        <div class="prato-name">Pataniscas de bacalhau com arroz de tomate</div>
+        <div class="prato-desc">Pataniscas estaladiças, arroz de tomate caseiro, azeitona preta, cebolinho.</div>
+      </div>
+      <div class="prato-price">10,50 €</div>
+    </div>
+  </div>
+
+  <div class="sec-sep"></div>
+
+  <!-- SOPAS -->
+  <div class="ementa-section" id="sopas">
+    <h2 class="ementa-section-title">Sopas <em>Reconfortantes</em></h2>
+    <p class="ementa-note">Servidas com pão de casa.</p>
+
+    <div class="prato">
+      <div>
+        <div class="prato-name">Caldo Verde</div>
+        <div class="prato-desc">Caldo verde tradicional, chouriço de vinho, batata, couve galega cortada em juliana fina.</div>
+        <div class="prato-tags"><span class="tag tag-hot">Muito pedido</span></div>
+      </div>
+      <div class="prato-price">7,50 €</div>
+    </div>
+    <div class="prato">
+      <div>
+        <div class="prato-name">Sopa da pedra à moda de Almeirim</div>
+        <div class="prato-desc">Feijão encarnado, chouriço, salpicão, entrecosto, morcela, couve, batata.</div>
+      </div>
+      <div class="prato-price">8,50 €</div>
+    </div>
+    <div class="prato">
+      <div>
+        <div class="prato-name">Açorda de marisco</div>
+        <div class="prato-desc">Pão de trigo, camarão, amêijoas, coentros, azeite, alho, ovo escalfado.</div>
+        <div class="prato-tags"><span class="tag tag-chef">Sugestão do chef</span></div>
+      </div>
+      <div class="prato-price">12,00 €</div>
+    </div>
+  </div>
+
+  <div class="sec-sep"></div>
+
+  <!-- PEIXE -->
+  <div class="ementa-section" id="peixe">
+    <h2 class="ementa-section-title">Peixe <em>Do mar à mesa</em></h2>
+    <p class="ementa-note">Peixe fresco diariamente do mercado da Ribeira.</p>
+
+    <div class="prato">
+      <div>
+        <div class="prato-name">Bacalhau à Brás</div>
+        <div class="prato-desc">Bacalhau desfiado, batata palha crocante, ovos mexidos, azeitonas pretas, salsa.</div>
+        <div class="prato-tags"><span class="tag tag-hot">Muito pedido</span></div>
+      </div>
+      <div class="prato-price">18,50 €</div>
+    </div>
+    <div class="prato">
+      <div>
+        <div class="prato-name">Polvo à Lagareiro</div>
+        <div class="prato-desc">Polvo do Algarve, batatas a murro, azeite extra virgem Alentejano, alho confitado, cebola roxa.</div>
+        <div class="prato-tags"><span class="tag tag-chef">Sugestão do chef</span><span class="tag tag-hot">Muito pedido</span></div>
+      </div>
+      <div class="prato-price">24,00 €</div>
+    </div>
+    <div class="prato">
+      <div>
+        <div class="prato-name">Robalo grelhado com legumes da época</div>
+        <div class="prato-desc">Robalo do dia, grelhado no carvão, legumes salteados, molho de limão e ervas frescas.</div>
+      </div>
+      <div class="prato-price">26,00 €</div>
+    </div>
+    <div class="prato">
+      <div>
+        <div class="prato-name">Cataplana de marisco</div>
+        <div class="prato-desc">Camarão, amêijoas, lingueirão, mexilhão, tomate, pimento, chouriço, coentros. Para 2 pessoas.</div>
+        <div class="prato-tags"><span class="tag tag-new">Novidade</span></div>
+      </div>
+      <div class="prato-price">52,00 €</div>
+    </div>
+    <div class="prato">
+      <div>
+        <div class="prato-name">Arroz de linguado com camarão</div>
+        <div class="prato-desc">Arroz caldoso, linguado, camarão tigre, açafrão, coentros. Para 2 pessoas.</div>
+      </div>
+      <div class="prato-price">38,00 €</div>
+    </div>
+  </div>
+
+  <div class="sec-sep"></div>
+
+  <!-- CARNE -->
+  <div class="ementa-section" id="carne">
+    <h2 class="ementa-section-title">Carne <em>Da terra ao prato</em></h2>
+    <p class="ementa-note">Carne de produtores alentejanos e transmontanos de confiança.</p>
+
+    <div class="prato">
+      <div>
+        <div class="prato-name">Secretos Ibéricos grelhados</div>
+        <div class="prato-desc">Secretos de porco ibérico, grelhados na brasa, legumes salteados, molho de mostarda e mel.</div>
+        <div class="prato-tags"><span class="tag tag-hot">Muito pedido</span></div>
+      </div>
+      <div class="prato-price">22,00 €</div>
+    </div>
+    <div class="prato">
+      <div>
+        <div class="prato-name">Entrecosto de vitela com puré de batata trufado</div>
+        <div class="prato-desc">Vitela alentejana, puré de batata com azeite e trufa, molho de vinho tinto.</div>
+        <div class="prato-tags"><span class="tag tag-chef">Sugestão do chef</span></div>
+      </div>
+      <div class="prato-price">28,00 €</div>
+    </div>
+    <div class="prato">
+      <div>
+        <div class="prato-name">Frango de campo no forno com arroz de miúdos</div>
+        <div class="prato-desc">Frango de campo, assado lentamente, arroz de miúdos, azeitona, limão.</div>
+      </div>
+      <div class="prato-price">19,50 €</div>
+    </div>
+    <div class="prato">
+      <div>
+        <div class="prato-name">Cabrito assado à transmontana</div>
+        <div class="prato-desc">Cabrito do Barroso, assado em forno a lenha, batatas assadas, alho, alecrim. Para 2 pessoas.</div>
+        <div class="prato-tags"><span class="tag tag-new">Novidade</span></div>
+      </div>
+      <div class="prato-price">46,00 €</div>
+    </div>
+  </div>
+
+  <div class="sec-sep"></div>
+
+  <!-- VEGETARIANO -->
+  <div class="ementa-section" id="vegetariano">
+    <h2 class="ementa-section-title">Vegetariano <em>Da horta com amor</em></h2>
+
+    <div class="prato">
+      <div>
+        <div class="prato-name">Risotto de cogumelos selvagens e parmesão</div>
+        <div class="prato-desc">Cogumelos porcini, shitake, trompetes, risotto cremoso, parmesão 24 meses, trufa.</div>
+        <div class="prato-tags"><span class="tag tag-veg">Vegetariano</span></div>
+      </div>
+      <div class="prato-price">17,50 €</div>
+    </div>
+    <div class="prato">
+      <div>
+        <div class="prato-name">Lasanha de legumes da época</div>
+        <div class="prato-desc">Legumes sazonais, béchamel, tomate fresco, manjericão, mozzarella de búfala.</div>
+        <div class="prato-tags"><span class="tag tag-veg">Vegetariano</span></div>
+      </div>
+      <div class="prato-price">15,00 €</div>
+    </div>
+    <div class="prato">
+      <div>
+        <div class="prato-name">Prato do dia vegetariano</div>
+        <div class="prato-desc">Pergunta ao teu servidor o que temos hoje. Muda diariamente com os melhores produtos da época.</div>
+        <div class="prato-tags"><span class="tag tag-veg">Vegetariano</span><span class="tag tag-new">Diário</span></div>
+      </div>
+      <div class="prato-price">13,00 €</div>
+    </div>
+  </div>
+
+  <div class="sec-sep"></div>
+
+  <!-- SOBREMESAS -->
+  <div class="ementa-section" id="sobremesas">
+    <h2 class="ementa-section-title">Sobremesas <em>Para terminar em beleza</em></h2>
+
+    <div class="prato">
+      <div>
+        <div class="prato-name">Leite creme com canela</div>
+        <div class="prato-desc">Receita tradicional, açúcar queimado na hora, canela de Ceilão.</div>
+        <div class="prato-tags"><span class="tag tag-hot">Muito pedido</span></div>
+      </div>
+      <div class="prato-price">6,50 €</div>
+    </div>
+    <div class="prato">
+      <div>
+        <div class="prato-name">Pastel de nata morno com gelado de baunilha</div>
+        <div class="prato-desc">Pastel de nata acabado de fazer, gelado artesanal de baunilha Madagascar.</div>
+      </div>
+      <div class="prato-price">7,00 €</div>
+    </div>
+    <div class="prato">
+      <div>
+        <div class="prato-name">Mousse de chocolate negro e laranja</div>
+        <div class="prato-desc">Chocolate 70% São Tomé, zest de laranja, flor de sal, crocante de amêndoa.</div>
+        <div class="prato-tags"><span class="tag tag-chef">Sugestão do chef</span></div>
+      </div>
+      <div class="prato-price">7,50 €</div>
+    </div>
+    <div class="prato">
+      <div>
+        <div class="prato-name">Arroz doce com canela</div>
+        <div class="prato-desc">Receita da avó do chef. Arroz carolino, leite gordo, limão, canela em pó.</div>
+      </div>
+      <div class="prato-price">6,00 €</div>
+    </div>
+    <div class="prato">
+      <div>
+        <div class="prato-name">Tábua de queijos portugueses</div>
+        <div class="prato-desc">Selecção de 4 queijos — Serra da Estrela, Azeitão, Évora, São Jorge — com mel e compota.</div>
+        <div class="prato-tags"><span class="tag tag-veg">Vegetariano</span></div>
+      </div>
+      <div class="prato-price">14,00 €</div>
+    </div>
+  </div>
+
+  <div class="sec-sep"></div>
+
+  <!-- VINHOS -->
+  <div class="ementa-section" id="vinhos">
+    <h2 class="ementa-section-title">Vinhos <em>A carta</em></h2>
+    <p class="ementa-note">Carta com mais de 80 referências nacionais. Pedimos ao nosso sommelier para te aconselhar.</p>
+
+    <div class="prato">
+      <div>
+        <div class="prato-name">Vinho da casa — Branco</div>
+        <div class="prato-desc">Alentejo, fresco e aromático. Copo / Garrafa</div>
+      </div>
+      <div class="prato-price">3,50 / 14,00 €</div>
+    </div>
+    <div class="prato">
+      <div>
+        <div class="prato-name">Vinho da casa — Tinto</div>
+        <div class="prato-desc">Douro, encorpado, taninos suaves. Copo / Garrafa</div>
+      </div>
+      <div class="prato-price">3,50 / 14,00 €</div>
+    </div>
+    <div class="prato">
+      <div>
+        <div class="prato-name">Quinta do Crasto Reserva</div>
+        <div class="prato-desc">Douro DOC 2020 — Touriga Nacional, Touriga Franca, Tinta Roriz.</div>
+        <div class="prato-tags"><span class="tag tag-chef">Recomendado</span></div>
+      </div>
+      <div class="prato-price">38,00 €</div>
+    </div>
+    <div class="prato">
+      <div>
+        <div class="prato-name">Esporão Reserva Branco</div>
+        <div class="prato-desc">Alentejo DOC 2021 — Antão Vaz, Arinto. Fresco e mineral.</div>
+      </div>
+      <div class="prato-price">28,00 €</div>
+    </div>
+    <div class="prato">
+      <div>
+        <div class="prato-name">Tábua de queijos + Moscatel do Setúbal</div>
+        <div class="prato-desc">Combinação perfeita para terminar. Tábua de queijos + copo de Moscatel.</div>
+        <div class="prato-tags"><span class="tag tag-hot">Muito pedido</span></div>
+      </div>
+      <div class="prato-price">18,50 €</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="ementa-cta">
+  <p>Pronto para reservar a tua mesa?</p>
+  <a href="index2.html#reserva" class="btn-terra">Reservar agora →</a>
+</div>
+
+<footer>
+  <div class="footer-simple">
+    <a href="index2.html" class="footer-logo">Mesas</a>
+    <div class="footer-links">
+      <a href="index2.html">Início</a>
+      <a href="galeria.html">Galeria</a>
+      <a href="equipa.html">Equipa</a>
+      <a href="index2.html#localizacao">Localização</a>
+      <a href="index2.html#reserva">Reservar</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Highlight cat nav on scroll
+  const sections = document.querySelectorAll('.ementa-section');
+  const catLinks = document.querySelectorAll('.cat-nav a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 140) current = s.id; });
+    catLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+
+  const navTabs = Array.from(document.querySelectorAll('#navTabs li'));
+  const navCursor = document.getElementById('navCursor');
+  function updateNavCursor(tab) {
+    const rect = tab.getBoundingClientRect();
+    const parentRect = tab.parentElement.getBoundingClientRect();
+    navCursor.style.width = `${rect.width}px`;
+    navCursor.style.transform = `translateX(${rect.left - parentRect.left}px) translateY(-50%)`;
+    navCursor.style.opacity = '1';
+  }
+  if (navTabs.length && navCursor) {
+    navTabs.forEach(tab => {
+      tab.addEventListener('mouseenter', () => updateNavCursor(tab));
+      tab.addEventListener('click', () => {
+        navTabs.forEach(item => item.classList.remove('active'));
+        tab.classList.add('active');
+        updateNavCursor(tab);
+      });
+    });
+    document.querySelector('nav').addEventListener('mouseleave', () => {
+      const activeTab = document.querySelector('#navTabs li.active');
+      if (activeTab) updateNavCursor(activeTab);
+    });
+    window.addEventListener('load', () => {
+      const activeTab = document.querySelector('#navTabs li.active');
+      if (activeTab) updateNavCursor(activeTab);
+    });
+  }
+</script>
+</body>
+</html>
